@@ -22,12 +22,37 @@ module Algorithms
   # complexity is O(1), beyond input storahe (not counting the storage
   # required for input arguments). Elements of input array can be modified.
   class SplitArray
-    # Broot force
+    # Brute force
     def self.alg1(x, a)
       a.each_index do |i|
-        return i if a[0...i].count(x) == a[i...a.count].count { |e| e != x }
+        return i if split_diff(x, a, i) == 0
       end
       -1
+    end
+
+    # 1. Let k eq index of the middle array element
+    # 2. Return k if difference == 0
+    # 3. Return -1 if k == 0 || k == a.count - 1
+    # 4. Change k by (difference / 2.0).ceil
+    # 5. Go to 2
+    def self.alg2(x, a)
+      k = a.count / 2
+      loop do
+        diff = split_diff(x, a, k)
+        puts "k: #{k}, diff: #{diff}"
+        return k if diff == 0
+        return -1 if k == 0 || k == a.count - 1
+        k -= (diff / 2.0).round
+      end
+    end
+
+    class << self
+      alias_method :alg, :alg2
+    end
+
+    # Difference of left and right parts counts
+    def self.split_diff(x, a, k)
+      a[0...k].count(x) - a[k...a.count].count { |e| e != x }
     end
   end
 end
